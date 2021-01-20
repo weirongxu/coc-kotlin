@@ -12,6 +12,9 @@
     "coc.nvim",
     "kotlin"
   ],
+  "files": [
+    "lib"
+  ],
   "engines": {
     "coc": "^0.0.80"
   },
