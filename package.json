@@ -7,6 +7,8 @@
   },
   "version": "0.0.1",
   "publisher": "weirongxu <weirongxu.raidou@gmail.com>",
+  "author": "Weirong Xu <weirongxu.raidou@gmail.com>",
+  "homepage": "https://github.com/weirongxu/coc-kotlin",
   "license": "MIT",
   "keywords": [
     "coc.nvim",

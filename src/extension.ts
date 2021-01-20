@@ -4,7 +4,7 @@ import path from 'path';
 import { InternalConfigManager } from './internalConfig';
 import { activateLanguageServer } from './languageSetup';
 import { fsExists } from './util/fsUtils';
-import { LOG } from './util/logger';
+import { LOG, logger } from './util/logger';
 import { Status, StatusBarEntry } from './util/status';
 
 // this method is called when your extension is activated
@@ -52,7 +52,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     );
   }
 
-  await Promise.all(initTasks);
+  await Promise.all(initTasks).catch(logger.error);
 }
 
 async function withSpinningStatus(
