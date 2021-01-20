@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/weirongxu/coc-kotlin.git"
   },
-  "version": "0.0.1",
+  "version": "0.0.0",
   "publisher": "weirongxu <weirongxu.raidou@gmail.com>",
   "license": "MIT",
   "keywords": [
