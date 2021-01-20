@@ -1,0 +1,29 @@
+# Project files
+.settings
+.classpath
+.project
+.factorypath
+.gradle
+.vscode-test
+.idea
+*.iml
+.DS_Store
+
+.vscode/**/*
+!.vscode/launch.json
+
+# Build files
+node_modules
+bin
+build
+target
+out
+lib
+__pycache__
+*.vsix
+
+# Automatically downloaded
+langServerInstall
+debugAdapterInstall
+grammarsDownload.zip
+syntaxes

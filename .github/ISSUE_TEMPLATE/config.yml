@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: '🚨 Is it related to code completion, linting, Gradle/Maven or syntax highlighting?'
+    url: https://github.com/fwcd/kotlin-language-server/issues
+    about: 'Please file the issue here instead: https://github.com/fwcd/kotlin-language-server/issues'

@@ -1,0 +1,118 @@
+{
+  "name": "coc-kotlin",
+  "description": "Smart code completion, linting, syntax highlighting and more for Kotlin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weirongxu/coc-kotlin.git"
+  },
+  "version": "0.0.1",
+  "publisher": "weirongxu <weirongxu.raidou@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "coc.nvim",
+    "kotlin"
+  ],
+  "engines": {
+    "coc": "^0.0.80"
+  },
+  "activationEvents": [
+    "onLanguage:kotlin"
+  ],
+  "main": "lib/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kotlin.languageServer.restart",
+        "title": "Restart the Language Server"
+      }
+    ],
+    "configuration": {
+      "title": "Kotlin",
+      "properties": {
+        "kotlin.languageServer.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "[Recommended] Specifies whether the language server should be used. When enabled the extension will provide code completions and linting, otherwise just syntax highlighting. Might require a reload to apply."
+        },
+        "kotlin.languageServer.path": {
+          "type": "string",
+          "default": "",
+          "description": "Optionally a custom path to the language server executable."
+        },
+        "kotlin.languageServer.transport": {
+          "type": "string",
+          "enum": [
+            "stdio",
+            "tcp"
+          ],
+          "description": "The transport layer beneath the language server protocol. Note that the extension will launch the server even if a TCP socket is used.",
+          "default": "stdio"
+        },
+        "kotlin.languageServer.port": {
+          "type": "integer",
+          "description": "The port to which the client will attempt to connect to. A random port is used if zero. Only used if the transport layer is TCP.",
+          "default": 0
+        },
+        "kotlin.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between coc.nvim and the Kotlin language server.",
+          "scope": "window"
+        },
+        "kotlin.compiler.jvm.target": {
+          "type": "string",
+          "default": "default",
+          "description": "Specifies the JVM target, e.g. \"1.6\" or \"1.8\""
+        },
+        "kotlin.linting.debounceTime": {
+          "type": "integer",
+          "default": 250,
+          "description": "[DEBUG] Specifies the debounce time limit. Lower to increase responsiveness at the cost of possibile stability issues."
+        },
+        "kotlin.completion.snippets.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Specifies whether code completion should provide snippets (true) or plain-text items (false)."
+        },
+        "kotlin.externalSources.useKlsScheme": {
+          "type": "boolean",
+          "default": true,
+          "description": "[Recommended] Specifies whether URIs inside JARs should be represented using the 'kls'-scheme."
+        },
+        "kotlin.externalSources.autoConvertToKotlin": {
+          "type": "boolean",
+          "default": true,
+          "description": "Specifies whether decompiled/external classes should be auto-converted to Kotlin."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "watch": "webpack --mode development -w",
+    "lint": "eslint src --ext .js,.ts",
+    "build": "webpack --mode production",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@types/extract-zip": "^1.6.2",
+    "@types/node": "^14.14.21",
+    "@types/semver": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "coc-helper": "^0.8.4",
+    "coc.nvim": "^0.0.80",
+    "eslint": "^7.18.0",
+    "ts-loader": "^8.0.14",
+    "typescript": "^4.1.3",
+    "webpack": "^5.15.0",
+    "webpack-cli": "^4.3.1"
+  },
+  "dependencies": {
+    "semver": "^7.3.2"
+  }
+}
