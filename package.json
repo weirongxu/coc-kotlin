@@ -25,6 +25,19 @@
   ],
   "main": "lib/extension.js",
   "contributes": {
+    "rootPatterns": [
+      {
+        "filetype": "kotlin",
+        "patterns": [
+          ".project",
+          ".classpath",
+          "build.gradle",
+          ".gradle",
+          "gradlew",
+          "gradlew.bat"
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "kotlin.languageServer.restart",
