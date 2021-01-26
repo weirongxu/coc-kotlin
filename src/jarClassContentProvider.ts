@@ -25,7 +25,7 @@ export class JarClassContentProvider implements TextDocumentContentProvider {
     const result = await this.client.sendRequest(JarClassContentsRequest.type, {
       uri: uri.toString(),
     });
-    if (result == null) {
+    if (!result) {
       // eslint-disable-next-line no-restricted-properties
       window.showMessage(
         `Could not fetch class file contents of '${uri}' from the language server. Make sure that it conforms to the format 'kls:file:///path/to/myJar.jar!/path/to/myClass.class'!`,

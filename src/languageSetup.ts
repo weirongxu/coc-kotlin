@@ -233,14 +233,14 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
   const binname = correctBinname(rawBinname);
 
   // First search java.home setting
-  const userJavaHome = workspace.getConfiguration('java').get('home') as string;
+  const userJavaHome = workspace.getConfiguration('java').get<string>('home');
 
-  if (userJavaHome != null) {
+  if (userJavaHome) {
     LOG.debug('Looking for Java in java.home (settings): {}', userJavaHome);
 
     const candidate = await findJavaExecutableInJavaHome(userJavaHome, binname);
 
-    if (candidate != null) {
+    if (candidate) {
       return candidate;
     }
   }
@@ -256,7 +256,7 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
 
     const candidate = await findJavaExecutableInJavaHome(envJavaHome, binname);
 
-    if (candidate != null) {
+    if (candidate) {
       return candidate;
     }
   }
