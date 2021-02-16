@@ -30,9 +30,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
       'Ok, continue',
     );
     if (!confirmed) {
-      await window.showWarningMessage(
-        'Only syntax highlighting will be available for Kotlin.',
-      );
       return;
     }
     await internalConfigManager.updateConfig({ initialized: true });

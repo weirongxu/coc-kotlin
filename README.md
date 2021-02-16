@@ -22,3 +22,7 @@ To use, open a Kotlin file **inside a Gradle or Maven project**. Support for Kot
 ```
 :CocInstall coc-kotlin
 ```
+
+## Syntax highlight
+
+Recommend to use https://github.com/udalov/kotlin-vim

@@ -1,6 +1,6 @@
 {
   "name": "coc-kotlin",
-  "description": "Smart code completion, linting, syntax highlighting and more for Kotlin",
+  "description": "Smart code completion, linting and more for Kotlin",
   "repository": {
     "type": "git",
     "url": "https://github.com/weirongxu/coc-kotlin.git"
@@ -53,7 +53,7 @@
         "kotlin.languageServer.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "[Recommended] Specifies whether the language server should be used. When enabled the extension will provide code completions and linting, otherwise just syntax highlighting. Might require a reload to apply."
+          "description": "[Recommended] Specifies whether the language server should be used. When enabled the extension will provide code completions and linting. Might require a reload to apply."
         },
         "kotlin.languageServer.path": {
           "type": "string",
