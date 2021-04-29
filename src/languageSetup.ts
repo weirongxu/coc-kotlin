@@ -70,17 +70,10 @@ export async function activateLanguageServer(
 
   const transportLayer = config.get('languageServer.transport');
   let tcpPort: number | undefined = undefined;
-  let initStatusSuffix: string = '';
   const env: any = undefined;
 
   if (transportLayer === 'tcp') {
     tcpPort = config.get<number>('languageServer.port')!;
-
-    if (tcpPort === 0) {
-      initStatusSuffix = ' via TCP';
-    } else {
-      initStatusSuffix = ` via TCP port ${tcpPort}`;
-    }
 
     LOG.info(`Connecting via TCP, port: ${tcpPort}`);
   } else if (transportLayer === 'stdio') {
@@ -89,7 +82,7 @@ export async function activateLanguageServer(
     LOG.info(`Unknown transport layer: ${transportLayer}`);
   }
 
-  status.update(`Initializing Kotlin Language Server${initStatusSuffix}...`);
+  status.dispose();
 
   const startScriptPath =
     customPath ||
@@ -156,6 +149,7 @@ function createLanguageClient(options: {
         workspace.createFileSystemWatcher('**/settings.gradle'),
       ],
     },
+    progressOnInitialization: true,
     outputChannel: options.outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
   };
