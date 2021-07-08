@@ -8,6 +8,7 @@ import {
   RevealOutputChannelOn,
   ServerOptions,
   StreamInfo,
+  Uri,
   window,
   workspace,
   WorkspaceConfiguration,
@@ -165,11 +166,12 @@ function createLanguageClient(options: {
   if (options.tcpPort) {
     serverOptions = () => spawnLanguageServerProcessAndConnectViaTcp(options);
   } else {
+    const cwdUri = workspace.workspaceFolders?.[0]?.uri;
     serverOptions = {
       command: options.startScriptPath,
       args: [],
       options: {
-        cwd: workspace.workspaceFolders?.[0]?.uri,
+        cwd: cwdUri ? Uri.parse(cwdUri).fsPath : undefined,
         env: options.env,
       }, // TODO: Support multi-root workspaces (and improve support for when no available is available)
     };
