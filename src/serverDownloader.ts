@@ -4,7 +4,7 @@ import path from 'path';
 import semver from 'semver';
 import { GitHubReleasesAPIResponse } from './githubApi';
 import { fsExists } from './util/fsUtils';
-import { LOG } from './util/logger';
+import { logger } from './util/logger';
 import { Status } from './util/status';
 
 export interface ServerInfo {
@@ -50,8 +50,8 @@ export class ServerDownloader {
         (await fs.promises.readFile(this.serverInfoFile())).toString('utf8'),
       ) as ServerInfo;
       return semver.valid(info.version) ? info : undefined;
-    } catch {
-      return;
+    } catch (err) {
+      logger.warn((err as Error).toString());
     }
   }
 
@@ -95,21 +95,23 @@ export class ServerDownloader {
 
     if (secondsSinceLastUpdate > 480) {
       // Only query GitHub API for latest version if some time has passed
-      LOG.info(`Querying GitHub API for new ${this.displayName} version...`);
+      logger.info(`Querying GitHub API for new ${this.displayName} version...`);
 
       let releaseInfo: GitHubReleasesAPIResponse;
 
       try {
         releaseInfo = await this.latestReleaseInfo();
       } catch (error) {
-        const message = `Could not fetch from GitHub releases API: ${error}.`;
+        const message = `Could not fetch from GitHub releases API: ${(
+          error as Error
+        ).toString()}.`;
         if (serverInfo === undefined) {
           // No server is installed yet, so throw
           throw new Error(message);
         } else {
           // Do not throw since user might just be offline
           // and a version of the server is already installed
-          LOG.warn(message);
+          logger.warn(message);
           return;
         }
       }

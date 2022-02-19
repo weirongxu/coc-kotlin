@@ -13,7 +13,7 @@ export interface Status {
 export class StatusBarEntry implements Status {
   private barItem: StatusBarItem;
   private prefix?: string;
-  private disposed: boolean = false;
+  private disposed = false;
 
   constructor(context: ExtensionContext, prefix?: string) {
     this.prefix = prefix;

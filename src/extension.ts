@@ -4,7 +4,7 @@ import path from 'path';
 import { InternalConfigManager } from './internalConfig';
 import { activateLanguageServer } from './languageSetup';
 import { fsExists } from './util/fsUtils';
-import { LOG, logger } from './util/logger';
+import { logger } from './util/logger';
 import { Status, StatusBarEntry } from './util/status';
 
 // this method is called when your extension is activated
@@ -44,7 +44,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       }),
     );
   } else {
-    LOG.info(
+    logger.info(
       "Skipping language server activation since 'kotlin.languageServer.enabled' is false",
     );
   }

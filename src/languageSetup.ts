@@ -19,7 +19,7 @@ import path from 'path';
 import { JarClassContentProvider } from './jarClassContentProvider';
 import { ServerDownloader } from './serverDownloader';
 import { fsExists } from './util/fsUtils';
-import { LOG } from './util/logger';
+import { logger } from './util/logger';
 import { correctBinname, correctScriptName, isOSUnixoid } from './util/osUtils';
 import { Status } from './util/status';
 
@@ -29,7 +29,7 @@ export async function activateLanguageServer(
   status: Status,
   config: WorkspaceConfiguration,
 ) {
-  LOG.info('Activating Kotlin Language Server...');
+  logger.info('Activating Kotlin Language Server...');
   status.update('Activating Kotlin Language Server...');
 
   // Prepare language server
@@ -51,7 +51,9 @@ export async function activateLanguageServer(
       await langServerDownloader.downloadServerIfNeeded(status);
     } catch (error) {
       await window.showWarningMessage(
-        `Could not update/download Kotlin Language Server: ${error}`,
+        `Could not update/download Kotlin Language Server: ${(
+          error as Error
+        ).toString()}`,
       );
       return;
     }
@@ -66,7 +68,7 @@ export async function activateLanguageServer(
     return;
   }
 
-  const outputChannel = window.createOutputChannel('Kotlin');
+  const outputChannel = window.createOutputChannel('kotlin-language-server');
   context.subscriptions.push(outputChannel);
 
   const transportLayer = config.get('languageServer.transport');
@@ -76,11 +78,11 @@ export async function activateLanguageServer(
   if (transportLayer === 'tcp') {
     tcpPort = config.get<number>('languageServer.port')!;
 
-    LOG.info(`Connecting via TCP, port: ${tcpPort}`);
+    logger.info(`Connecting via TCP, port: ${tcpPort}`);
   } else if (transportLayer === 'stdio') {
-    LOG.info('Connecting via Stdio.');
+    logger.info('Connecting via Stdio.');
   } else {
-    LOG.info(`Unknown transport layer: ${transportLayer}`);
+    logger.info(`Unknown transport layer: ${transportLayer as string}`);
   }
 
   status.dispose();
@@ -107,17 +109,20 @@ export async function activateLanguageServer(
     workspace.registerTextDocumentContentProvider('kls:file', contentProvider),
   );
   context.subscriptions.push(
-    commands.registerCommand('kotlin.languageServer.restart', async () => {
-      await languageClient.stop();
-      languageClientDisposable.dispose();
+    commands.registerCommand(
+      'kotlin.languageServer.restart',
+      logger.asyncCatch(async () => {
+        await languageClient.stop();
+        languageClientDisposable.dispose();
 
-      outputChannel.appendLine('');
-      outputChannel.appendLine(' === Language Server Restart ===');
-      outputChannel.appendLine('');
+        outputChannel.appendLine('');
+        outputChannel.appendLine(' === Language Server Restart ===');
+        outputChannel.appendLine('');
 
-      languageClientDisposable = languageClient.start();
-      context.subscriptions.push(languageClientDisposable);
-    }),
+        languageClientDisposable = languageClient.start();
+        context.subscriptions.push(languageClientDisposable);
+      }),
+    ),
   );
 
   await languageClient.onReady();
@@ -176,7 +181,7 @@ function createLanguageClient(options: {
         env: options.env,
       }, // TODO: Support multi-root workspaces (and improve support for when no available is available)
     };
-    LOG.info('Creating client at {}', options.startScriptPath);
+    logger.info(`Creating client at ${options.startScriptPath}`);
   }
 
   return new LanguageClient(
@@ -193,9 +198,9 @@ export function spawnLanguageServerProcessAndConnectViaTcp(options: {
   tcpPort?: number;
 }): Promise<StreamInfo> {
   return new Promise((resolve, reject) => {
-    LOG.info('Creating server.');
+    logger.info('Creating server.');
     const server = net.createServer((socket) => {
-      LOG.info('Closing server since client has connected.');
+      logger.info('Closing server since client has connected.');
       server.close();
       resolve({ reader: socket, writer: socket });
     });
@@ -206,14 +211,12 @@ export function spawnLanguageServerProcessAndConnectViaTcp(options: {
         '--tcpClientPort',
         tcpPort,
       ]);
-      LOG.info(
-        'Creating client at {} via TCP port {}',
-        options.startScriptPath,
-        tcpPort,
+      logger.info(
+        `Creating client at ${options.startScriptPath} via TCP port ${tcpPort}`,
       );
 
       const outputCallback = (data: any) =>
-        options.outputChannel.append(`${data}`);
+        options.outputChannel.append(`${data as string}`);
       proc.stdout.on('data', outputCallback);
       proc.stderr.on('data', outputCallback);
       proc.on('exit', (code, sig) =>
@@ -233,7 +236,7 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
   const userJavaHome = workspace.getConfiguration('java').get<string>('home');
 
   if (userJavaHome) {
-    LOG.debug('Looking for Java in java.home (settings): {}', userJavaHome);
+    logger.debug(`Looking for Java in java.home (settings): ${userJavaHome}`);
 
     const candidate = await findJavaExecutableInJavaHome(userJavaHome, binname);
 
@@ -246,9 +249,8 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
   const envJavaHome = process.env['JAVA_HOME'];
 
   if (envJavaHome) {
-    LOG.debug(
-      'Looking for Java in JAVA_HOME (environment variable): {}',
-      envJavaHome,
+    logger.debug(
+      `Looking for Java in JAVA_HOME (environment variable): ${envJavaHome}`,
     );
 
     const candidate = await findJavaExecutableInJavaHome(envJavaHome, binname);
@@ -260,7 +262,7 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
 
   // Then search PATH parts
   if (process.env['PATH']) {
-    LOG.debug('Looking for Java in PATH');
+    logger.debug('Looking for Java in PATH');
 
     const pathparts = process.env['PATH'].split(path.delimiter);
     for (let i = 0; i < pathparts.length; i++) {
@@ -272,7 +274,7 @@ async function findJavaExecutable(rawBinname: string): Promise<string> {
   }
 
   // Else return the binary name directly (this will likely always fail downstream)
-  LOG.debug('Could not find Java, will try using binary name directly');
+  logger.debug('Could not find Java, will try using binary name directly');
   return binname;
 }
 
@@ -289,6 +291,4 @@ async function findJavaExecutableInJavaHome(
       return binpath;
     }
   }
-
-  return;
 }

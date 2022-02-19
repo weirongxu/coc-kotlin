@@ -28,7 +28,7 @@ export class JarClassContentProvider implements TextDocumentContentProvider {
     if (!result) {
       // eslint-disable-next-line no-restricted-properties
       window.showMessage(
-        `Could not fetch class file contents of '${uri}' from the language server. Make sure that it conforms to the format 'kls:file:///path/to/myJar.jar!/path/to/myClass.class'!`,
+        `Could not fetch class file contents of '${uri.toString()}' from the language server. Make sure that it conforms to the format 'kls:file:///path/to/myJar.jar!/path/to/myClass.class'!`,
         'error',
       );
       return '';
