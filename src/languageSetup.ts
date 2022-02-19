@@ -104,6 +104,7 @@ export async function activateLanguageServer(
   const contentProvider = new JarClassContentProvider(languageClient);
   context.subscriptions.push(
     workspace.registerTextDocumentContentProvider('kls', contentProvider),
+    workspace.registerTextDocumentContentProvider('kls:file', contentProvider),
   );
   context.subscriptions.push(
     commands.registerCommand('kotlin.languageServer.restart', async () => {
