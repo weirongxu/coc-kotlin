@@ -13,14 +13,12 @@ import {
   workspace,
   WorkspaceConfiguration,
 } from 'coc.nvim';
-import fs from 'fs';
 import net from 'net';
 import path from 'path';
 import { JarClassContentProvider } from './jarClassContentProvider';
 import { ServerDownloader } from './serverDownloader';
-import { fsExists } from './util/fsUtils';
 import { logger } from './util/logger';
-import { correctBinname, correctScriptName, isOSUnixoid } from './util/osUtils';
+import { correctScriptName, isOSUnixoid } from './util/osUtils';
 import { Status } from './util/status';
 
 /** Downloads and starts the language server. */
@@ -57,15 +55,6 @@ export async function activateLanguageServer(
       );
       return;
     }
-  }
-
-  const javaExecutablePath = await findJavaExecutable('java');
-
-  if (javaExecutablePath == null) {
-    await window.showErrorMessage(
-      "Couldn't locate java in $JAVA_HOME or $PATH",
-    );
-    return;
   }
 
   const outputChannel = window.createOutputChannel('kotlin-language-server');
@@ -227,68 +216,4 @@ export function spawnLanguageServerProcessAndConnectViaTcp(options: {
     });
     server.on('error', (e) => reject(e));
   });
-}
-
-async function findJavaExecutable(rawBinname: string): Promise<string> {
-  const binname = correctBinname(rawBinname);
-
-  // First search java.home setting
-  const userJavaHome = workspace.getConfiguration('java').get<string>('home');
-
-  if (userJavaHome) {
-    logger.debug(`Looking for Java in java.home (settings): ${userJavaHome}`);
-
-    const candidate = await findJavaExecutableInJavaHome(userJavaHome, binname);
-
-    if (candidate) {
-      return candidate;
-    }
-  }
-
-  // Then search each JAVA_HOME
-  const envJavaHome = process.env['JAVA_HOME'];
-
-  if (envJavaHome) {
-    logger.debug(
-      `Looking for Java in JAVA_HOME (environment variable): ${envJavaHome}`,
-    );
-
-    const candidate = await findJavaExecutableInJavaHome(envJavaHome, binname);
-
-    if (candidate) {
-      return candidate;
-    }
-  }
-
-  // Then search PATH parts
-  if (process.env['PATH']) {
-    logger.debug('Looking for Java in PATH');
-
-    const pathparts = process.env['PATH'].split(path.delimiter);
-    for (let i = 0; i < pathparts.length; i++) {
-      const binpath = path.join(pathparts[i], binname);
-      if (fs.existsSync(binpath)) {
-        return binpath;
-      }
-    }
-  }
-
-  // Else return the binary name directly (this will likely always fail downstream)
-  logger.debug('Could not find Java, will try using binary name directly');
-  return binname;
-}
-
-async function findJavaExecutableInJavaHome(
-  javaHome: string,
-  binname: string,
-): Promise<string | void> {
-  const workspaces = javaHome.split(path.delimiter);
-
-  for (let i = 0; i < workspaces.length; i++) {
-    const binpath = path.join(workspaces[i], 'bin', binname);
-
-    if (await fsExists(binpath)) {
-      return binpath;
-    }
-  }
 }

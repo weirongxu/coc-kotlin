@@ -2,6 +2,7 @@ import { ExtensionContext, window, workspace } from 'coc.nvim';
 import fs from 'fs';
 import path from 'path';
 import { InternalConfigManager } from './internalConfig';
+import { verifyJavaIsAvailable } from './javaSetup';
 import { activateLanguageServer } from './languageSetup';
 import { fsExists } from './util/fsUtils';
 import { logger } from './util/logger';
@@ -36,6 +37,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 
   const initTasks: Promise<void>[] = [];
+
+  if (!(await verifyJavaIsAvailable())) {
+    return;
+  }
 
   if (langServerEnabled) {
     initTasks.push(
