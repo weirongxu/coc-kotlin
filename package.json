@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/weirongxu/coc-kotlin.git"
   },
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "weirongxu <weirongxu.raidou@gmail.com>",
   "author": "Weirong Xu <weirongxu.raidou@gmail.com>",
   "homepage": "https://github.com/weirongxu/coc-kotlin",
