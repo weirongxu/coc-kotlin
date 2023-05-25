@@ -50,6 +50,11 @@
     "configuration": {
       "title": "Kotlin",
       "properties": {
+        "kotlin.java.opts": {
+          "type": "string",
+          "default": "",
+          "description": "Custom options using JAVA_OPTS for the language server and debug adapter."
+        },
         "kotlin.languageServer.enabled": {
           "type": "boolean",
           "default": true,
