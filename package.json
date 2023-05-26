@@ -53,7 +53,7 @@
         "kotlin.java.opts": {
           "type": "string",
           "default": "",
-          "description": "Custom options using JAVA_OPTS for the language server and debug adapter."
+          "description": "Custom options using JAVA_OPTS for the language server."
         },
         "kotlin.languageServer.enabled": {
           "type": "boolean",
