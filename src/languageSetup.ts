@@ -62,7 +62,12 @@ export async function activateLanguageServer(
 
   const transportLayer = config.get('languageServer.transport');
   let tcpPort: number | undefined = undefined;
-  const env: any = undefined;
+  const env: any = { ...process.env };
+
+  const javaOpts = config.get<string>('java.opts');
+  if (javaOpts) {
+    env['JAVA_OPTS'] = javaOpts;
+  }
 
   if (transportLayer === 'tcp') {
     tcpPort = config.get<number>('languageServer.port')!;
